@@ -1,0 +1,79 @@
+.calendar-frame{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.calendar-side-bar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    color: white;
+}
+
+.calendar-month {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    color: white;
+}
+
+.calendar-month > button > svg {
+    margin: 0;
+    padding: 0;
+}
+
+.calendar-month > h1 {
+    margin: 0;
+    padding: 0;
+    font-size: 35px;
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+}
+
+.calendar-map {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+}
+
+.day-frame {
+    display: flex;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+    transition: all 0.5s;
+}
+
+.calendar-head {
+    border: solid 1px rgb(221, 221, 221);
+}
+
+.day-frame::before {
+    content: "";
+    height: 0;
+    float: left;
+    padding-bottom: 100%;
+}
+
+.day-frame::after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.day-frame:hover {
+    border: solid 3px #14B8A6;
+}

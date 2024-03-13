@@ -1,0 +1,15 @@
+.bg-theme-principal {
+    background-color: #3fccbe;
+}
+
+.border-theme-principal {
+    border-color: #3fccbe;
+}
+
+.ring-theme-principal {
+    box-shadow: 0 0 0 3px #3fccbe;
+}
+
+.text-theme-principal {
+    color: #3fccbe;
+}
