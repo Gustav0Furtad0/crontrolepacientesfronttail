@@ -1,10 +1,9 @@
-import BasePage from '../components/base/basePage';
+import React, { useState } from 'react';
 
-import Card from '../components/card';
+import BasePage from '../components/base/basePage';
+import Modal from '../components/modals/addPaciente';
 
 import './../css/theme.css';
-
-import { PlusIcon } from '@heroicons/react/24/solid';
 
 let client = {
     name: 'Gugu Gaiteiro das Neves',
@@ -20,15 +19,17 @@ for (let i = 0; i < 10; i++) {
 }
 
 export default function PacientePage() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     return (
-        <BasePage title={"Pacientes"}>
+        <BasePage title={"ODT - Pacientes"}>
             <div className='w-full flex flex-col gap-14'>
-                <div className='w-full flex justify-around'>
-                    
-                </div>
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <div class="p-4 flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
-                        <button class="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
+                        <button class="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" 
+                            type="button"
+                            onClick={() => setIsModalOpen(true)}
+                        >
                             Adicionar Paciente
                         </button>
                         <label for="table-search" class="sr-only">Search</label>
@@ -57,7 +58,7 @@ export default function PacientePage() {
                                     Convênio
                                 </th>
                                 <th scope="col" class="px-6 py-3">
-                                    Action
+                                    
                                 </th>
                             </tr>
                         </thead>
@@ -78,7 +79,7 @@ export default function PacientePage() {
                                             {client.healthInsurance}
                                         </td>
                                         <td class="px-6 py-4">
-                                            <a href="#" class="font-medium text-teal-500 dark:text-blue-500 hover:underline">Editar</a>
+                                            <a href="/pacienteMenu" class="font-medium text-teal-500 dark:text-blue-500 hover:underline">Menu</a>
                                         </td>
                                     </tr>
                                 )
@@ -98,7 +99,7 @@ export default function PacientePage() {
                                 <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">2</a>
                             </li>
                             <li>
-                                <a href="#" aria-current="page" class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white">3</a>
+                                <a href="#" aria-current="page" class="flex items-center justify-center px-3 h-8 text-teal-500 border border-gray-300 bg-blue-50 hover:bg-teal-100 hover:text-teal-700">3</a>
                             </li>
                             <li>
                                 <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">4</a>
@@ -107,13 +108,14 @@ export default function PacientePage() {
                                 <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">5</a>
                             </li>
                             <li>
-                        <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
+                                <a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</a>
                             </li>
                         </ul>
                     </nav>
                 </div>
 
             </div>
+            {isModalOpen && <Modal onClose={() => setIsModalOpen(false)} />}
         </BasePage>
     );
 }

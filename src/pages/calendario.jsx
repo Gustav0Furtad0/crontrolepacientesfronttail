@@ -126,27 +126,42 @@ const days = [
     {
         position: 31,
         day: 31
-    }
+    },
+    {
+        position: 32,
+        day: ''
+    },
+    {
+        position: 33,
+        day: ''
+    },
+    {
+        position: 33,
+        day: ''
+    },
+    {
+        position: 34,
+        day: ''
+    },
 ];
 
 export default function CalendarioPage() {
     return (
-        <BasePage title="Calendário">
+        <BasePage title="ODT - Calendário">
             <div className='w-full flex flex-col gap-14'>
-                <h1>Calendário de consultas</h1>
-                <div className='calendar-frame shadow-lg'>
+                <div className='calendar-frame'>
                     <div className='calendar-side-bar bg-teal-500'>
                         <p>2024</p>
                         <div className='calendar-month'>
                             <button>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-9 h-9">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
                                 </svg>
                             </button>
                             <h1>AGOSTO</h1>
                             <button>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-9 h-9">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
                                 </svg>
                             </button>
                         </div>

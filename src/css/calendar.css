@@ -1,5 +1,6 @@
-.calendar-frame{
+.calendar-frame {
     display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
     border-radius: 10px;
@@ -12,17 +13,30 @@
     align-items: center;
     padding: 10px;
     color: white;
+    flex: 1;
+}
+
+.calendar-side-bar > p  {
+    margin: 0;
+    padding: 0;
+    font-size: 32px;
 }
 
 .calendar-month {
     display: flex;
-    flex-direction: column;
     justify-content: space-around;
     align-items: center;
     width: 100%;
     height: 100%;
-    padding: 10px;
     color: white;
+}
+
+.calendar-month > button {
+    margin: 0;
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 100%;
+    animation: border-pulse 2s infinite;
 }
 
 .calendar-month > button > svg {
@@ -34,46 +48,54 @@
     margin: 0;
     padding: 0;
     font-size: 35px;
-    writing-mode: vertical-rl;
-    text-orientation: upright;
 }
 
 .calendar-map {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     grid-template-rows: repeat(6, 1fr);
-    gap: 10px;
     width: 100%;
     height: 100%;
-    padding: 10px;
 }
 
 .day-frame {
     display: flex;
     cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    border-radius: 100%;
-    transition: all 0.5s;
-}
-
-.calendar-head {
+    justify-content: right;
+    align-items: top;
+    transition: linear 0.1s;
+    font-weight: bold;
     border: solid 1px rgb(221, 221, 221);
-}
-
-.day-frame::before {
-    content: "";
-    height: 0;
-    float: left;
-    padding-bottom: 100%;
-}
-
-.day-frame::after {
-    content: "";
-    display: block;
-    clear: both;
+    height: 100px;
+    color: #858585;
+    padding: 20px;
+    font-size: 20px;
 }
 
 .day-frame:hover {
-    border: solid 3px #14B8A6;
+    border: solid 1px #14B8A6;
+    color: black;
+}
+
+.calendar-head {
+    background-color: #ececec;
+    pointer-events: none;
+}
+
+.calendar-head:hover {
+    border: none;
+    color: #858585;
+    
+}
+
+@keyframes border-pulse {
+    0% {
+        box-shadow: 0 0 0 1px #ffffff;
+    }
+    50% {
+        box-shadow: 0 0 0 3px #ffffff;
+    }
+    100% {
+        box-shadow: 0 0 0 1px #ffffff;
+    }
 }
