@@ -1,27 +1,13 @@
 import React from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+
+import User from "../../scripts/auth/user";
 
 const RouteGuard = ({ component: Component, ...rest }) => {
-    function hasJWT() {
-        let flag = false;
+    //const hasJWT = () => !!sessionStorage.getItem("token");
+    const hasJWT = () => User.isLoggedIn();
 
-        localStorage.getItem("token") ? (flag = true) : (flag = false);
-
-        return flag;
-    }
-
-    return (
-        <Route
-            {...rest}
-            render={(props) =>
-                hasJWT() ? (
-                    <Component {...props} />
-                ) : (
-                    <Redirect to={{ pathname: "/login" }} />
-                )
-            }
-        />
-    );
+    return hasJWT() ? <Component {...rest} /> : <Navigate to="/login" replace />;
 };
 
 export default RouteGuard;

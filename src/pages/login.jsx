@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 import '../css/theme.css';
 
+import User from '../scripts/auth/user';
+
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
@@ -35,25 +37,9 @@ export default function LoginPage() {
 
     const handleLogin = async (event) => {
         event.preventDefault();
-    
         try {
-            const response = await fetch('http://localhost:5000/usuario/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
-            });
-    
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Falha no login');
-            }
-    
-            const data = await response.json();
-            sessionStorage.setItem('userToken', data.token);
-
-            navigate('/pacientes');
+            await User.login(username, password);
+            navigate('/');
         } catch (error) {
             console.log(error);
         }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Redirect, Switch, Route, Router } from "react-router-dom";
+import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import RouteGuard from "./components/utils/routeGuard";
 
 //history
@@ -11,21 +11,22 @@ import PacientePage from './pages/paciente';
 import CalendarioPage from './pages/calendario';
 import PacienteMenuPage from './pages/pacienteMenu';
 import FinanceiroPage from './pages/financeiro';
+import UsuariosPage from './pages/usuarios';
 
-function Routes() {
+function RoutesClass() {
     return (
         <Router history={history}>
-            <Switch>
-                <RouteGuard exact path="/" component={PacientePage} />
-                <RouteGuard path="/pacientes" component={PacientePage} />
-                <RouteGuard path="/calendario" component={CalendarioPage} />
-                <RouteGuard path="/pacienteMenu" component={PacienteMenuPage} />
-                <RouteGuard path="/financeiro" component={FinanceiroPage} />
-                <Route path="/login" component={LoginPage} />
-                <Redirect to="/" />
-            </Switch>
+            <Routes>
+                <Route path="/" element={<RouteGuard component={PacientePage} />} />
+                <Route path="/pacientes" element={<RouteGuard component={PacientePage} />} />
+                <Route path="/calendario" element={<RouteGuard component={CalendarioPage} />} />
+                <Route path="/pacienteMenu" element={<RouteGuard component={PacienteMenuPage} />} />
+                <Route path="/financeiro" element={<RouteGuard component={FinanceiroPage} />} />
+                <Route path="/usuarios" element={<RouteGuard component={UsuariosPage} />} />
+                <Route path="/login" element={<LoginPage />} />
+            </Routes>
         </Router>
     );
 }
 
-export default Routes;
+export default RoutesClass;

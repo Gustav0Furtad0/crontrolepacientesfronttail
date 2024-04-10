@@ -5,13 +5,24 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/solid'
 
+import { useNavigate } from 'react-router-dom';
+
 import '../../css/theme.css'
+
+import User from '../../scripts/auth/user'
 
 export default function Example() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    sessionStorage.removeItem('userToken');
+    try {
+      User.logout()
+    } catch (error) {
+      console.log(error)
+    } finally {
+      navigate('/login')
+    }
   }
 
   return (
@@ -45,14 +56,14 @@ export default function Example() {
           <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
             Dashboard
           </a>
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
+          <a href="/usuarios" className="text-sm font-semibold leading-6 text-gray-900">
             Usuários
           </a>
         </Popover.Group>  
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="/login" className="text-sm font-semibold leading-6 text-gray-900">
+          <button onClick={handleLogout} className="text-sm font-semibold leading-6 text-gray-900">
             Logout <span aria-hidden="true">&rarr;</span>
-          </a>
+          </button>
         </div>
       </nav>
       <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setMobileMenuOpen}>
@@ -98,11 +109,17 @@ export default function Example() {
                 >
                   Dashboard
                 </a>
+                <a
+                  href="/usuarios"
+                  className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                >
+                  Usuários
+                </a>
               </div>
               <div className="py-6">
                 <button
                   type="button"
-                  onClick={handleLogout()}
+                  onClick={handleLogout}
                   className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                 >
                   Logout
