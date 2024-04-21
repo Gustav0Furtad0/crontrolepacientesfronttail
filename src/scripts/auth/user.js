@@ -1,9 +1,10 @@
 import CookieManager from './cookies.js';
+import env from "react-dotenv";
 
 export default class User {
     static async login(username, password) {
         try {
-            const response = await fetch('http://localhost:5000/usuario/login', {
+            const response = await fetch(env.API_URL + '/session/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -17,29 +18,21 @@ export default class User {
             }
 
             const data = await response.json();
-            //sessionStorage.setItem('token', data.token);
             CookieManager.setCookie('token', data.token, 15);
-            console.log(data, 'CookieManager - login: ', CookieManager.getCookie('token'));
         } catch (error) {
-            console.log(error);
+            return error;
         }
-    }
+    }   
 
     static logout() {
-        //sessionStorage.removeItem('token');
-        console.log('CookieManager - Logout:', CookieManager.getCookie('token'));
         CookieManager.removeCookie('token');
     }
 
     static isLoggedIn() {
-        console.log('CookieManager - isLoggedIn:', CookieManager.getCookie('token'));
-        //return !!sessionStorage.getItem('token');
         return !!CookieManager.getCookie('token');
     }
 
     static getUser() {
-        console.log('CookieManager - getUser:', CookieManager.getCookie('token'));
-        //const token = sessionStorage.getItem('token');
         const token = CookieManager.getCookie('token');
         if (!token) return null;
 
@@ -49,14 +42,10 @@ export default class User {
     }
 
     static getToken() {
-        console.log('CookieManager - getToken:', CookieManager.getCookie('token'));
-        //return sessionStorage.getItem('token');
         return CookieManager.getCookie('token');
     }
 
     static setToken(token) {
-        console.log('CookieManager - setToken:', CookieManager.getCookie('token'));
-        //sessionStorage.setItem('token', token);
         CookieManager.setCookie('token', token, 15);
     }
 }

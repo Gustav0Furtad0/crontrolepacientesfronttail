@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import Usuario from "../../scripts/usuarios";
 
 function AddUserModal({ onClose }) {
     const [userData, setUserData] = useState({
-        username: "",
+        nomeUsuario: "",
+        nomeCompleto: "",
+        senha: "",
         email: "",
-        role: "Usuário", // Valor padrão
-        status: "Ativo", // Valor padrão
+        tipoUsuario: "",
     });
 
     const handleChange = (e) => {
@@ -14,87 +16,120 @@ function AddUserModal({ onClose }) {
             ...prevState,
             [name]: value,
         }));
+        console.log(userData)
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Dados do usuário para adicionar:", userData);
-        onClose();
+        try {
+            console.log(userData)
+            let result = await Usuario.addUser(userData);
+            if (result.code === 200) {
+                onClose(true);
+            } else {
+                onclose(false);
+            }
+        } catch (error) {
+            console.error('Erro:', error);
+        }
     };
 
     return (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center">
-            <div className="bg-white rounded-lg shadow-lg p-5">
-                <h2 className="text-lg font-semibold">
-                    Adicionar Novo Usuário
-                </h2>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="username" className="block mt-2">
-                        Nome de Usuário:
-                    </label>
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        value={userData.username}
-                        onChange={handleChange}
-                        required
-                        className="mt-1 mb-4 p-2 w-full border rounded"
-                    />
+            <div className="absolute top-32 bg-white rounded shadow-lg w-1/2">
+            <div className="border-b px-4 py-2 flex justify-between items-center">
+                    <h2 className="font-semibold text-lg">Adicionar Novo Usuário</h2>
+                    <button className="text-black close-modal" onClick={onClose}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <form onSubmit={handleSubmit} className="p-4">
+                    <div className="mb-4">
+                        <label htmlFor="nomeCompleto" className="block text-gray-700 text-sm font-bold mb-2">
+                            Nome Completo:
+                        </label>
+                        <input
+                            type="text"
+                            id="nomeCompleto"
+                            name="nomeCompleto"
+                            value={userData.nomeCompleto}
+                            onChange={handleChange}
+                            required
+                            className="input input-bordered w-full"
+                        />
+                    </div>
 
-                    <label htmlFor="email" className="block">
-                        Email:
-                    </label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={userData.email}
-                        onChange={handleChange}
-                        required
-                        className="mt-1 mb-4 p-2 w-full border rounded"
-                    />
+                    <div className="mb-4">
+                        <label htmlFor="nomeUsuario" className="block text-gray-700 text-sm font-bold mb-2">
+                            Nome de Usuário:
+                        </label>
+                        <input
+                            type="text"
+                            id="nomeUsuario"
+                            name="nomeUsuario"
+                            value={userData.nomeUsuario}
+                            onChange={handleChange}
+                            required
+                            className="input input-bordered w-full"
+                        />
+                    </div>
 
-                    <label htmlFor="role" className="block">
-                        Papel:
-                    </label>
-                    <select
-                        id="role"
-                        name="role"
-                        value={userData.role}
-                        onChange={handleChange}
-                        className="mt-1 mb-4 p-2 w-full border rounded"
-                    >
-                        <option>Usuário</option>
-                        <option>Administrador</option>
-                    </select>
+                    <div className="mb-4">
+                        <label htmlFor="email" className="block text-gray-700 text-sm font-bold mb-2">
+                            Email:
+                        </label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={userData.email}
+                            onChange={handleChange}
+                            required
+                            className="input input-bordered w-full"
+                        />
+                    </div>
 
-                    <label htmlFor="status" className="block">
-                        Status:
-                    </label>
-                    <select
-                        id="status"
-                        name="status"
-                        value={userData.status}
-                        onChange={handleChange}
-                        className="mt-1 mb-4 p-2 w-full border rounded"
-                    >
-                        <option>Ativo</option>
-                        <option>Inativo</option>
-                    </select>
+                    <div className="mb-4">
+                        <label htmlFor="senha" className="block text-gray-700 text-sm font-bold mb-2">
+                            Senha:
+                        </label>
+                        <input
+                            type="text"
+                            id="senha"
+                            name="senha"
+                            value={userData.senha}
+                            onChange={handleChange}
+                            required
+                            className="input input-bordered w-full"
+                        />
+                    </div>
 
-                    <div className="flex justify-end mt-4">
-                        <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                    <div className="mb-4">
+                        <label htmlFor="tipoUsuario" className="block text-gray-700 text-sm font-bold mb-2">
+                            Cargo:
+                        </label>
+                        <select
+                            id="tipoUsuario"
+                            name="tipoUsuario"
+                            value={userData.tipoUsuario}
+                            onChange={handleChange}
+                            className="input input-bordered w-full"
+                            required
                         >
+                            <option value="">Selecione um cargo</option>
+                            <option value='atendente'>Atendente</option>
+                            <option value='clinico'>Clínico</option>
+                            <option value='administrador'>Administrador</option>
+                        </select>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                        <button disabled={!userData.tipoUsuario} type="submit" className="btn btn-outline btn-success">
                             Salvar
                         </button>
-                        <button
-                            type="button"
-                            onClick={onClose}
-                            className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                        >
+                        <button type="button" onClick={onClose} className="btn btn-outline btn-error">
                             Cancelar
                         </button>
                     </div>

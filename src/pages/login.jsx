@@ -33,6 +33,7 @@ export default function LoginPage() {
     useEffect(() => {
         const selectedMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
         setWelcomeMessage(selectedMessage);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleLogin = async (event) => {

@@ -26,7 +26,7 @@ export default function Example() {
   }
 
   return (
-    <header className="bg-white border-b-2 border-teal-500 drop-shadow z-50">
+    <header className="bg-white border-b-2 border-teal-500 drop-shadow">
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8" aria-label="Global">
         <div className="flex lg:flex-1">
           <a href="#" className="p-1.5">
