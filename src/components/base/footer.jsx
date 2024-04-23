@@ -3,7 +3,7 @@ export default function Footer() {
         <footer className="bg-teal-500">
             <div className="py-2 md:block hidden">
                 <p className="text-center text-base text-white">
-                    &copy; 2024 Gustavo Furtado. All rights reserved.
+                    ERP by <a className="underline underline-offset-2 hover:text-black" target="blank" href="https://github.com/Gustav0Furtad0">Gustavo Furtado</a>. All rights reserved.
                 </p>
             </div>
         </footer>

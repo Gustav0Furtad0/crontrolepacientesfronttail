@@ -3,41 +3,48 @@ import BasePage from '../components/base/basePage';
 import './../css/theme.css';
 import './../css/calendar.css';
 
+import ConsultaDiaModal from '../components/modals/consultaDiaModal';
+
 const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
 
 const generateCalendarDays = (year, month) => {
-  const firstDayOfMonth = new Date(year, month, 1);
-  const daysInMonth = getDaysInMonth(year, month);
+    const firstDayOfMonth = new Date(year, month, 1);
+    const daysInMonth = getDaysInMonth(year, month);
 
-  // Determinar o dia da semana do primeiro dia do mês
-  const weekdayOfFirstDay = firstDayOfMonth.getDay();
+    // Determinar o dia da semana do primeiro dia do mês
+    const weekdayOfFirstDay = firstDayOfMonth.getDay();
 
-  const daysInLastMonth = month === 0 ? getDaysInMonth(year - 1, 11) : getDaysInMonth(year, month - 1);
+    const daysInLastMonth = month === 0 ? getDaysInMonth(year - 1, 11) : getDaysInMonth(year, month - 1);
 
-  // Preencher os dias anteriores ao primeiro dia do mês atual
-  const previousMonthDays = Array.from({ length: weekdayOfFirstDay }, (_, i) => ({
-    day: daysInLastMonth - i,
-    fromOtherMonth: true,
-  })).reverse();
+    // Preencher os dias anteriores ao primeiro dia do mês atual
+    const previousMonthDays = Array.from({ length: weekdayOfFirstDay }, (_, i) => ({
+        day: daysInLastMonth - i,
+        fromOtherMonth: true,
+        date: new Date(year, month - 1, daysInLastMonth - i),
+    })).reverse();
 
-  // Dias do mês atual
-  const currentMonthDays = Array.from({ length: daysInMonth }, (_, i) => ({
-    day: i + 1,
-    fromOtherMonth: false,
-  }));
+    // Dias do mês atual
+    const currentMonthDays = Array.from({ length: daysInMonth }, (_, i) => ({
+        day: i + 1,
+        fromOtherMonth: false,
+        date: new Date(year, month, i + 1),
+    }));
 
-  // Preencher os dias após o último dia do mês atual
-  const totalDays = weekdayOfFirstDay + daysInMonth;
-  const nextMonthDaysCount = 7 - totalDays % 7;
-  const nextMonthDays = Array.from({ length: nextMonthDaysCount === 7 ? 0 : nextMonthDaysCount }, (_, i) => ({
-    day: i + 1,
-    fromOtherMonth: true,
-  }));
+    // Preencher os dias após o último dia do mês atual
+    const totalDays = weekdayOfFirstDay + daysInMonth;
+    const nextMonthDaysCount = 7 - totalDays % 7;
+    const nextMonthDays = Array.from({ length: nextMonthDaysCount === 7 ? 0 : nextMonthDaysCount }, (_, i) => ({
+        day: i + 1,
+        fromOtherMonth: true,
+        date: new Date(year, month + 1, i + 1),
+    }));
 
-  return [...previousMonthDays, ...currentMonthDays, ...nextMonthDays];
+    return [...previousMonthDays, ...currentMonthDays, ...nextMonthDays];
 };
 export default function CalendarioPage() {
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(null);
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     
     const handleMonthChange = (direction) => {
@@ -49,6 +56,11 @@ export default function CalendarioPage() {
         const month = currentDate.getMonth();
         return generateCalendarDays(year, month);
     };
+
+    const openDayPage = (date) => () => {
+        setSelectedDate(date);
+        setModalOpen(true);
+    }
 
     return (
         <BasePage title="ODT - Calendário">
@@ -81,13 +93,14 @@ export default function CalendarioPage() {
                         <div className="day-frame calendar-head"><h3>Sex</h3></div>
                         <div className="day-frame calendar-head"><h3>Sab</h3></div>
                         {renderDays().map((item, index) => (
-                            <div key={index} className={`day-frame ${item.fromOtherMonth ? 'bg-gray-300' : 'day-frame-hover'}`}>
+                            <div key={index} onClick={openDayPage(item.date)} className={`day-frame ${item.fromOtherMonth ? 'bg-gray-300' : 'day-frame-hover'}`}>
                                 {item.day}
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
+            {modalOpen && <ConsultaDiaModal isOpen={modalOpen} onClose={() => setModalOpen(false)} date={selectedDate} />}
         </BasePage>
     );
 }

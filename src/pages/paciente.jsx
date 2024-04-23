@@ -45,7 +45,7 @@ export default function PacientePage() {
 
     const filteredPacientes = pacientes.filter(paciente =>
         paciente.nomeCompleto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        paciente.cpf.includes(searchTerm).includes(searchTerm.toLowerCase())
+        paciente.cpf.includes(searchTerm)
     );
 
     const pageCount = Math.ceil(filteredPacientes.length / patientsPerPage);
@@ -64,6 +64,20 @@ export default function PacientePage() {
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
+    };
+
+    const calculaIdade = (dataNascimento) => {
+        const dataAtual = new Date();
+        const dataNascimentoFormatada = new Date(dataNascimento);
+        let idade = dataAtual.getFullYear() - dataNascimentoFormatada.getFullYear();
+        const mesAtual = dataAtual.getMonth();
+        const mesNascimento = dataNascimentoFormatada.getMonth();
+
+        if (mesAtual < mesNascimento || (mesAtual === mesNascimento && dataAtual.getDate() < dataNascimentoFormatada.getDate())) {
+            idade--;
+        }
+
+        return idade;
     };
 
     return (
@@ -118,7 +132,9 @@ export default function PacientePage() {
                                             {paciente.cpf}
                                         </td>
                                         <td className="px-6 py-4">
-                                            {paciente.dataNascimento}
+                                            <div className="tooltip" data-tip={calculaIdade(paciente.dataNascimento) + ' anos'}>
+                                                {paciente.dataNascimento}
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4">
                                             {paciente.convenio}
@@ -138,10 +154,10 @@ export default function PacientePage() {
                         </tbody>
                     </table>
                     <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4 p-4" aria-label="Table navigation">
-                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing <span className="font-semibold text-gray-900 dark:text-white">{indexOfFirstPatient + 1}-{indexOfLastPatient}</span> of <span className="font-semibold text-gray-900 dark:text-white">{pacientes.length}</span></span>
+                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Mostrando <span className="font-semibold text-gray-900 dark:text-white">{indexOfFirstPatient + 1}-{indexOfLastPatient}</span> de <span className="font-semibold text-gray-900 dark:text-white">{pacientes.length}</span></span>
                         <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                             <li>
-                                <button onClick={handlePreviousPage} disabled={currentPage === 1} className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">Previous</button>
+                                <button onClick={handlePreviousPage} disabled={currentPage === 1} className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">Anterior</button>
                             </li>
                             {Array.from({ length: pageCount }, (_, i) => (
                                 <li key={i}>
@@ -151,11 +167,58 @@ export default function PacientePage() {
                                 </li>
                             ))}
                             <li>
-                                <button onClick={handleNextPage} disabled={currentPage === pageCount} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</button>
+                                <button onClick={handleNextPage} disabled={currentPage === pageCount} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Próximo</button>
                             </li>
                         </ul>
                     </nav>
                 </div>
+                <ul className="timeline timeline-vertical">
+                    <li>
+                        <div className="timeline-start timeline-box">Consulta - Ana Silva</div>
+                        <div className="timeline-end">14:00</div>
+                        <div className="timeline-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                        </div>
+                        <hr className="bg-teal-500"/>
+                    </li>
+                    <li>
+                        <hr className="bg-teal-500"/>
+                        <div className="timeline-start timeline-box">Fim Consulta - Ana Silva</div>
+                        <div className="timeline-end">15:00</div>
+                        <div className="timeline-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                        </div>
+                        <hr/>
+                    </li>
+
+                    <li>
+                        <hr/>
+                        <div className="timeline-end timeline-box">Horário Disponível</div>
+                        <div className="timeline-start">15:00 ás 17:00</div>
+                        <div className="timeline-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                        </div>
+                        <hr/>
+                    </li>
+
+                    <li>
+                        <hr/>
+                        <div className="timeline-start timeline-box">Consulta - Davi Pacheco</div>
+                        <div className="timeline-end">17:00</div>
+                        <div className="timeline-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                        </div>
+                        <hr className="bg-teal-500"/>
+                    </li>
+                    <li>
+                        <hr className="bg-teal-500"/>
+                        <div className="timeline-start timeline-box">Fim Consulta - Davi Pacheco</div>
+                        <div className="timeline-end">18:00</div>
+                        <div className="timeline-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                        </div>
+                    </li>
+                </ul>
             </div>
             {alert.show && (
                 <div className="toast toast-top toast-end">

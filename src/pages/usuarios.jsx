@@ -11,7 +11,7 @@ export default function UserPage() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [usuarios, setUsuarios] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const [patientsPerPage] = useState(10);
+    const [usersPerPage] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const [alert, setAlert] = useState({ show: false, message: '', type: '' });
 
@@ -43,16 +43,16 @@ export default function UserPage() {
         setCurrentPage(1); // Reset to first page on search change
     };
 
-    const filtredUsuarios = usuarios.filter(paciente =>
-        paciente.nomeCompleto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        paciente.cpf.includes(searchTerm).includes(searchTerm.toLowerCase())
+    const filteredUsuarios = usuarios.filter(usuario =>
+        usuario.nomeCompleto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        usuario.nomeUsuario.includes(searchTerm.toLowerCase())
     );
 
-    const pageCount = Math.ceil(filtredUsuarios.length / patientsPerPage);
+    const pageCount = Math.ceil(filteredUsuarios.length / usersPerPage);
 
-    const indexOfLastPatient = currentPage * patientsPerPage;
-    const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
-    const currentUsuarios = filtredUsuarios.slice(indexOfFirstPatient, indexOfLastPatient);
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsuarios = filteredUsuarios.slice(indexOfFirstUser, indexOfLastUser);
 
     const handleNextPage = () => {
         setCurrentPage(prev => (prev < pageCount ? prev + 1 : prev));
@@ -67,7 +67,7 @@ export default function UserPage() {
     };
 
     return (
-        <BasePage title={"ODT - Pacientes"}>
+        <BasePage title={"ODT - Usuários"}>
             <div className='w-full flex flex-col gap-14'>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <div className="p-4 flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
@@ -75,7 +75,7 @@ export default function UserPage() {
                             type="button"
                             onClick={() => setIsModalOpen(true)}
                         >
-                            Adicionar Paciente
+                            Adicionar Usuário
                         </button>
                         <label htmlFor="table-search-costumers" className="sr-only">Search</label>
                         <div className="relative">
@@ -84,7 +84,7 @@ export default function UserPage() {
                                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                                 </svg>
                             </div>
-                            <input onChange={handleSearchChange} type="text" id="table-search-costumers" className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500" placeholder="Pesquisar paciente"/>
+                            <input onChange={handleSearchChange} type="text" id="table-search-costumers" className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500" placeholder="Pesquisar usuário"/>
                         </div>
                     </div>
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -92,9 +92,6 @@ export default function UserPage() {
                             <tr>
                                 <th scope="col" className="px-6 py-3">
                                     Nome Completo
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    CPF
                                 </th>
                                 <th scope="col" className="px-6 py-3">
                                     Nome de Usuário
@@ -115,9 +112,6 @@ export default function UserPage() {
                                             {usuario.nomeCompleto}
                                         </th>
                                         <td className="px-6 py-4">
-                                            {usuario.cpf}
-                                        </td>
-                                        <td className="px-6 py-4">
                                             {usuario.nomeUsuario}
                                         </td>
                                         <td className="px-6 py-4">
@@ -125,7 +119,7 @@ export default function UserPage() {
                                         </td>
                                         <td className="px-6 py-4">
                                             <a  
-                                                href="/pacienteMenu"
+                                                href="/usuarioMenu"
                                                 className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" 
                                                 type="button"
                                             >
@@ -138,7 +132,7 @@ export default function UserPage() {
                         </tbody>
                     </table>
                     <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4 p-4" aria-label="Table navigation">
-                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing <span className="font-semibold text-gray-900 dark:text-white">{indexOfFirstPatient + 1}-{indexOfLastPatient}</span> of <span className="font-semibold text-gray-900 dark:text-white">{usuarios.length}</span></span>
+                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing <span className="font-semibold text-gray-900 dark:text-white">{indexOfFirstUser + 1}-{indexOfLastUser}</span> of <span className="font-semibold text-gray-900 dark:text-white">{usuarios.length}</span></span>
                         <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                             <li>
                                 <button onClick={handlePreviousPage} disabled={currentPage === 1} className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">Previous</button>
