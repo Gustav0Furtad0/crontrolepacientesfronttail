@@ -11,26 +11,24 @@ const generateCalendarDays = (year, month) => {
     const firstDayOfMonth = new Date(year, month, 1);
     const daysInMonth = getDaysInMonth(year, month);
 
-    // Determinar o dia da semana do primeiro dia do mês
     const weekdayOfFirstDay = firstDayOfMonth.getDay();
 
     const daysInLastMonth = month === 0 ? getDaysInMonth(year - 1, 11) : getDaysInMonth(year, month - 1);
 
-    // Preencher os dias anteriores ao primeiro dia do mês atual
     const previousMonthDays = Array.from({ length: weekdayOfFirstDay }, (_, i) => ({
         day: daysInLastMonth - i,
         fromOtherMonth: true,
         date: new Date(year, month - 1, daysInLastMonth - i),
     })).reverse();
 
-    // Dias do mês atual
     const currentMonthDays = Array.from({ length: daysInMonth }, (_, i) => ({
         day: i + 1,
         fromOtherMonth: false,
         date: new Date(year, month, i + 1),
+        //if day is today or bigger than today, background is white
+        background: new Date(year, month, i + 2) >= new Date() ? 'day-frame-hover bg-white' : 'day-frame-hover bg-gray-200',
     }));
 
-    // Preencher os dias após o último dia do mês atual
     const totalDays = weekdayOfFirstDay + daysInMonth;
     const nextMonthDaysCount = 7 - totalDays % 7;
     const nextMonthDays = Array.from({ length: nextMonthDaysCount === 7 ? 0 : nextMonthDaysCount }, (_, i) => ({
@@ -93,7 +91,7 @@ export default function CalendarioPage() {
                         <div className="day-frame calendar-head"><h3>Sex</h3></div>
                         <div className="day-frame calendar-head"><h3>Sab</h3></div>
                         {renderDays().map((item, index) => (
-                            <div key={index} onClick={openDayPage(item.date)} className={`day-frame ${item.fromOtherMonth ? 'bg-gray-300' : 'day-frame-hover'}`}>
+                            <div key={index} onClick={openDayPage(item.date)} className={`day-frame ${item.fromOtherMonth ? 'bg-gray-400' : item.background} `}>
                                 {item.day}
                             </div>
                         ))}

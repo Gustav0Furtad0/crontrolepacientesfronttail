@@ -40,7 +40,7 @@ export default function PacientePage() {
 
     const handleSearchChange = (event) => {
         setSearchTerm(event.target.value);
-        setCurrentPage(1); // Reset to first page on search change
+        setCurrentPage(1);
     };
 
     const filteredPacientes = pacientes.filter(paciente =>
@@ -172,53 +172,6 @@ export default function PacientePage() {
                         </ul>
                     </nav>
                 </div>
-                <ul className="timeline timeline-vertical">
-                    <li>
-                        <div className="timeline-start timeline-box">Consulta - Ana Silva</div>
-                        <div className="timeline-end">14:00</div>
-                        <div className="timeline-middle">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                        </div>
-                        <hr className="bg-teal-500"/>
-                    </li>
-                    <li>
-                        <hr className="bg-teal-500"/>
-                        <div className="timeline-start timeline-box">Fim Consulta - Ana Silva</div>
-                        <div className="timeline-end">15:00</div>
-                        <div className="timeline-middle">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                        </div>
-                        <hr/>
-                    </li>
-
-                    <li>
-                        <hr/>
-                        <div className="timeline-end timeline-box">Horário Disponível</div>
-                        <div className="timeline-start">15:00 ás 17:00</div>
-                        <div className="timeline-middle">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                        </div>
-                        <hr/>
-                    </li>
-
-                    <li>
-                        <hr/>
-                        <div className="timeline-start timeline-box">Consulta - Davi Pacheco</div>
-                        <div className="timeline-end">17:00</div>
-                        <div className="timeline-middle">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                        </div>
-                        <hr className="bg-teal-500"/>
-                    </li>
-                    <li>
-                        <hr className="bg-teal-500"/>
-                        <div className="timeline-start timeline-box">Fim Consulta - Davi Pacheco</div>
-                        <div className="timeline-end">18:00</div>
-                        <div className="timeline-middle">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                        </div>
-                    </li>
-                </ul>
             </div>
             {alert.show && (
                 <div className="toast toast-top toast-end">

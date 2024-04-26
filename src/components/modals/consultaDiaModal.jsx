@@ -1,6 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+import Usuarios from '../../scripts/usuarios';
+
+import Modal from '../modals/addConsulta';
 
 export default function ConsultaDiaModal({ isOpen, onClose, date }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [clinicos, setClinicos] = useState([]); 
+
+    const fetchClinicos = async () => {
+        try {
+            const result = await Usuarios.getUsersByType('clinico');
+            setClinicos(result);
+        } catch (error) {
+            console.error('Erro:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchClinicos();
+    }, []);
+
     // const [selectedDate, setSelectedDate] = React.useState(date);
     // const [selectedClinico, setSelectedClinico] = useState(null);
 
@@ -15,7 +35,7 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
     // const handleConsultar = () => {
     //     console.log('Consultar:', selectedDate, selectedClinico);
     // };
-
+    
     const convertDate = (date) => {
         // Converte a data para o formato 'dd/mm/yyyy'
         const day = date.getDate().toString().padStart(2, '0');
@@ -147,14 +167,14 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
                     <div className="overflow-x-auto w-3/4">
                         <div className='flex justify-between border-b pb-4'>
                             <select className="select select-bordered w-full max-w-xs">
-                                <option disabled selected>Selecione um profissional</option>
-                                <option>Eduardo Salvarani</option>
-                                <option>Rita Cássia</option>
+                                {clinicos.map((clinico) => (
+                                    <option key={clinico.id} value={clinico.id}>{clinico.nomeCompleto}</option>
+                                ))}
                             </select>
 
                             <button className="btn" 
                             type="button"
-                            // onClick={() => setIsModalOpen(true)}
+                            onClick={() => setIsModalOpen(true)}
                             >
                                 Adicionar atendimento
                             </button>
@@ -255,7 +275,8 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
                         </nav>
                     </div>
                 </div>
-            </div>
+                {isModalOpen && <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
+            </div>  
         </div>
     );
 }

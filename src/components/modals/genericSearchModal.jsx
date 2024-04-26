@@ -10,37 +10,30 @@ function GenericSearchModal({
 }) {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(5);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
-    // Função para filtrar os dados com base no searchTerm
-    const filteredData = data.filter((item) =>
+    const filteredData = data ? data.filter((item) =>
         columns.some((column) =>
-            item[column.key]
-                .toString()
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
+            item[column.key] && item[column.key].toString().toLowerCase().includes(searchTerm.toLowerCase())
         )
-    );
+    ) : [];
 
     const pageCount = Math.ceil(filteredData.length / itemsPerPage);
 
     const changePage = (number) => {
-        console.error(number);
-        setCurrentPage(number);
+        setCurrentPage(Math.max(1, Math.min(number, pageCount))); // Garante que a página esteja dentro do intervalo válido
     };
 
     const firstItemIndex = (currentPage - 1) * itemsPerPage;
     const currentItems = filteredData.slice(firstItemIndex, firstItemIndex + itemsPerPage);
 
-    // Lógica para controlar os botões visíveis da paginação
+
     const maxPageButtons = 5;
     let startPage, endPage;
     if (pageCount <= maxPageButtons) {
-        // menos páginas do que o máximo, mostre todas
         startPage = 1;
         endPage = pageCount;
     } else {
-        // mais páginas do que o máximo, calcule o intervalo
         startPage = Math.max(1, currentPage - 2);
         endPage = startPage + maxPageButtons - 1;
         if (endPage > pageCount) {
@@ -96,8 +89,15 @@ function GenericSearchModal({
                             </tr>
                         </thead>
                         <tbody>
+                            {currentItems.length === 0 && (
+                                <tr>
+                                    <td colSpan={columns.length} className="px-6 py-4 text-center">
+                                        Nenhum item encontrado
+                                    </td>
+                                </tr>
+                            )}
                             {currentItems.map((item, index) => (
-                                <tr key={index} onClick={() => {
+                                <tr key={index + 1231313123} onClick={() => {
                                         onSelectItem(item)
                                         onClose()
                                     }}
@@ -139,49 +139,6 @@ function GenericSearchModal({
                         </li>
                     </ul>
                 </nav>
-                {/* <nav className="flex items-center justify-between p-4" aria-label="Table navigation">
-                    <ul className="inline-flex items-center -space-x-px">
-                        <li>
-                            <button type="button" onClick={() => changePage(1)} disabled={currentPage === 1} className="px-3 py-1 mx-1 text-gray-500 bg-white border border-gray-300 rounded hover:bg-gray-100">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m18.75 4.5-7.5 7.5 7.5 7.5m-6-15L5.25 12l7.5 7.5" />
-                                </svg>
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" onClick={() => changePage(currentPage - 1)} disabled={currentPage === 1} className="px-3 py-1 mx-1 text-gray-500 bg-white border border-gray-300 rounded hover:bg-gray-100">
-                                
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                                </svg>
-                            </button>
-                        </li>
-                        {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
-                            <li key={startPage + i}>
-                                <button
-                                    type="button"
-                                    onClick={() => changePage(startPage + i)} 
-                                    className={`px-3 py-1 mx-1 ${currentPage === startPage + i ? 'text-blue-600 bg-blue-200' : 'text-gray-500 bg-white'} border border-gray-300 rounded hover:bg-gray-100`}>
-                                    {startPage + i}
-                                </button>
-                            </li>
-                        ))}
-                        <li>
-                            <button type="button" onClick={() => changePage(currentPage + 1)} disabled={currentPage === pageCount} className="px-3 py-1 mx-1 text-gray-500 bg-white border border-gray-300 rounded hover:bg-gray-100">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                                </svg>
-                            </button>
-                        </li>
-                        <li>
-                            <button type="button" onClick={() => changePage(pageCount)} disabled={currentPage === pageCount} className="px-3 py-1 mx-1 text-gray-500 bg-white border border-gray-300 rounded hover:bg-gray-100">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m5.25 4.5 7.5 7.5-7.5 7.5m6-15 7.5 7.5-7.5 7.5" />
-                                </svg>
-                            </button>
-                        </li>
-                    </ul>
-                </nav> */}
             </div>
         </div>
     );
