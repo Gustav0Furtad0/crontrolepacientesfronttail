@@ -1,52 +1,219 @@
 import React, { useState, useEffect } from 'react';
-
 import Usuarios from '../../scripts/usuarios';
-
 import Modal from '../modals/addConsulta';
+import Consultas from '../../scripts/consultas';
+import GenericTable from '../visual/table';
 
 export default function ConsultaDiaModal({ isOpen, onClose, date }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [clinicos, setClinicos] = useState([]); 
+    const [clinicos, setClinicos] = useState([]);
+    const [selectedDate, setSelectedDate] = useState(date);
+    const [selectedClinico, setSelectedClinico] = useState(null);
+    const [consultas, setConsultas] = useState([]);
+    const [timeLine, setTimeLine] = useState([]);
 
     const fetchClinicos = async () => {
         try {
             const result = await Usuarios.getUsersByType('clinico');
             setClinicos(result);
+            if (result.length > 0) {
+                setSelectedClinico(result[0].uid);
+            }
         } catch (error) {
             console.error('Erro:', error);
         }
     };
 
+    const handleClinicoChange = (event) => {
+        setSelectedClinico(event.target.value);
+    };
+
+    const fetchConsultas = async () => {
+        try {
+            let formattedDate = new Date(selectedDate);
+            formattedDate = `${formattedDate.getFullYear()}-${(formattedDate.getMonth() + 1).toString().padStart(2, '0')}-${formattedDate.getDate().toString().padStart(2, '0')}`;
+            const queryParams = {
+                clinicoId: selectedClinico,
+                data: formattedDate
+            };
+            const result = await Consultas.getConsultas(queryParams);
+            result.reverse();
+            setConsultas(Array.isArray(result) ? result : []);
+            const timeLine = timeLineMaker(result);
+            setTimeLine(timeLine);
+        } catch (error) {
+            console.error('Erro:', error);
+        }
+    };
+
+    const timeLineMaker = (data) => {
+        let timeLine = [];
+        let ultimaHoraFinal = '00:00';
+        if (data.length === 0) {
+            timeLine.push(
+                <li>
+                    <div className="timeline-start timeline-box border-2">Nengum horário</div>
+                </li>
+            );
+            return timeLine;
+        }
+        for (let i = 0; i < data.length; i++) {
+            let consulta = data[i]
+            let timeLineItem = ('');
+            if (i === 0) {
+                timeLineItem = (
+                        <li>
+                            <div className={`timeline-start timeline-box ${consulta.paciente.sexo === 'Masculino' ? 'text-blue-700' : consulta.paciente.sexo === "Feminino" ? 'text-pink-700' : ''}`}>{consulta.paciente.nome.split(' ')[0] + ' ' + consulta.paciente.nome.split(' ')[consulta.paciente.nome.split(' ').length - 1]}</div>
+                            <div className="timeline-end">{consulta.dataInicio.split(' ')[1]}</div>
+                            <div className="timeline-middle">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <hr className="bg-teal-500"/>
+                        </li>
+                );
+                timeLine.push(timeLineItem);
+                timeLineItem = (
+                    <li>
+                        <hr className="bg-teal-500"/>
+                        <div className="timeline-end">{consulta.dataFim.split(' ')[1]} </div>
+                        <div className="timeline-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                        </div>
+                        {data.length === 1 ? '' : <hr/>}
+                    </li>
+                );
+                timeLine.push(timeLineItem);
+            } else if (i === data.length - 1) {
+                if (ultimaHoraFinal !== consulta.dataInicio.split(' ')[1].trim()) {
+                    timeLineItem = (
+                        <li>
+                            <hr/>
+                            <div className="mt-6 mb-6 timeline-start timeline-box border-2">Horário Disponível</div>
+                            <div className="timeline-end underline">{ultimaHoraFinal} ás {consulta.dataInicio.split(' ')[1]}</div>
+                            <div className="timeline-middle">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5  "><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                            </div>
+                            <hr/>
+                        </li>
+                    );
+                    timeLine.push(timeLineItem);
+                }
+
+                timeLineItem = (
+                    <li>
+                        <hr/>
+                        <div className={`timeline-start timeline-box ${consulta.paciente.sexo === 'Masculino' ? 'text-blue-700' : consulta.paciente.sexo === "Feminino" ? 'text-pink-700' : ''}`}>{consulta.paciente.nome.split(' ')[0] + ' ' + consulta.paciente.nome.split(' ')[consulta.paciente.nome.split(' ').length - 1]}</div>
+                        <div className="timeline-end">{consulta.dataInicio.split(' ')[1]}</div>
+                        <div className="timeline-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                        </div>
+                        <hr className="bg-teal-500"/>
+                    </li>
+                );
+                timeLine.push(timeLineItem);
+                timeLineItem = (
+                    <li>
+                        <hr className="bg-teal-500"/>
+                        <div className="timeline-end">{consulta.dataFim.split(' ')[1]} </div>
+                        <div className="timeline-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                        </div>
+                    </li>
+                );
+                timeLine.push(timeLineItem);
+            } else {
+                if (ultimaHoraFinal !== consulta.dataInicio.split(' ')[1].trim()) {
+                    timeLineItem = (
+                        <li>
+                            <hr/>
+                            <div className="mt-6 mb-6 timeline-start timeline-box border-2">Horário Disponível</div>
+                            <div className="timeline-end underline">{ultimaHoraFinal} ás {consulta.dataInicio.split(' ')[1]}</div>
+                            <div className="timeline-middle">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5  "><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                            </div>
+                            <hr/>
+                        </li>
+                    );
+                    timeLine.push(timeLineItem);
+                }
+
+                timeLineItem = (
+                    <li>
+                        <hr/>
+                        <div className={`timeline-start timeline-box ${consulta.paciente.sexo === 'Masculino' ? 'text-blue-700' : consulta.paciente.sexo === "Feminino" ? 'text-pink-700' : ''}`}>{consulta.paciente.nome.split(' ')[0] + ' ' + consulta.paciente.nome.split(' ')[consulta.paciente.nome.split(' ').length - 1]}</div>
+                        <div className="timeline-end">{consulta.dataInicio.split(' ')[1]}</div>
+                        <div className="timeline-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                        </div>
+                        <hr className="bg-teal-500"/>
+                    </li>
+                );
+                timeLine.push(timeLineItem);
+                timeLineItem = (
+                    <li>
+                        <hr className="bg-teal-500"/>
+                        <div className="timeline-end">{consulta.dataFim.split(' ')[1]} </div>
+                        <div className="timeline-middle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
+                        </div>
+                        <hr/>
+                    </li>
+                );
+                timeLine.push(timeLineItem);
+            }
+
+            ultimaHoraFinal = consulta.dataFim.split(' ')[1].trim();
+        }
+        return timeLine;
+    }
+
     useEffect(() => {
         fetchClinicos();
     }, []);
 
-    // const [selectedDate, setSelectedDate] = React.useState(date);
-    // const [selectedClinico, setSelectedClinico] = useState(null);
+    useEffect(() => {
+        if (selectedClinico) {
+            fetchConsultas();
+        }
+    }, [selectedClinico, selectedDate]);
 
-    // const handleDateChange = (date) => {
-    //     setSelectedDate(date);
-    // };
-
-    // const handleUserChange = (event) => {
-    //     setSelectedClinico(event.target.value);
-    // };
-
-    // const handleConsultar = () => {
-    //     console.log('Consultar:', selectedDate, selectedClinico);
-    // };
-    
     const convertDate = (date) => {
-        // Converte a data para o formato 'dd/mm/yyyy'
         const day = date.getDate().toString().padStart(2, '0');
         const month = (date.getMonth() + 1).toString().padStart(2, '0');
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
     };
 
+    const columns = [
+        { key: 'pacienteNome', title: 'Paciente' },
+        { key: 'clinicoNome', title: 'Clínico', render: (data) => data.split(' ')[0] + ' ' + data.split(' ')[data.split(' ').length - 1]},
+        { key: 'tipoConsulta', title: 'Atendimento' },
+        { key: 'dataInicio', title: 'Início', render: (data) => data.split(' ')[1] },
+        { key: 'dataFim', title: 'Fim', render: (data) => data.split(' ')[1] },
+        { key: 'edit', title: '', render: () => (
+            <a
+                href="/usuarioMenu"
+                className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                type="button"
+            >
+                Editar
+            </a>
+        ) },
+    ];
+
+    const tableData = consultas.map((consulta) => ({
+        pacienteNome: consulta.paciente.nome,
+        clinicoNome: consulta.clinico.nome,
+        tipoConsulta: consulta.tipoConsulta,
+        dataInicio: consulta.dataInicio,
+        dataFim: consulta.dataFim,
+    }));
+
     return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center">
-            <div className="absolute top-24 bg-white rounded shadow-lg w-3/4" style={{minHeight: '80%'}}>
+        <dialog className="my-modal">
+            <div className="modal-box w-11/12 max-w-5xl">
 
                 <div className="border-b px-4 py-2 flex justify-between items-center">
                     <h2 className="font-semibold text-lg">Atendimentos {convertDate(date)}</h2>
@@ -59,116 +226,23 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
 
                 <div className='flex p-8'>
 
-                    <div className="overflow-x-auto w-1/4">
+                    <div className="overflow-x-auto w-1/4" style={{ minWidth: 300}}>
                         <ul className="timeline timeline-vertical">
-
-                            <li>
-                                <div className="timeline-start timeline-box">Gustavo Furtado</div>
-                                <div className="timeline-end">08:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                                <hr className="bg-teal-500"/>
-                            </li>
-                            <li>
-                                <hr className="bg-teal-500"/>
-                                <div className="timeline-end">09:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                                <hr/>
-                            </li>
-
-                            <li>
-                                <hr/>
-                                <div className="timeline-start timeline-box">Maria Salvarani</div>
-                                <div className="timeline-end">09:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                                <hr className="bg-teal-500"/>
-                            </li>
-                            <li>
-                                <hr className="bg-teal-500"/>
-                                <div className="timeline-end">10:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                                <hr/>
-                            </li>
-
-                            <li>
-                                <hr/>
-                                <div className="mt-6 mb-6 timeline-start timeline-box border-2">Horário Disponível</div>
-                                <div className="timeline-end underline">10:00 ás 14:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5  "><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                                <hr/>
-                            </li>
-
-                            <li>
-                                <hr/>
-                                <div className="timeline-start timeline-box">Ana Silva</div>
-                                <div className="timeline-end">14:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                                <hr className="bg-teal-500"/>
-                            </li>
-                            <li>
-                                <hr className="bg-teal-500"/>
-                                <div className="timeline-end">15:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                                <hr/>
-                            </li>
-
-                            <li>
-                                <hr/>
-                                <div className="mt-6 mb-6 timeline-start timeline-box border-2">Horário Disponível</div>
-                                <div className="timeline-end underline">15:00 ás 17:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5  "><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                                <hr/>
-                            </li>
-
-                            <li>
-                                <hr/>
-                                <div className="timeline-start timeline-box">Davi Pacheco</div>
-                                <div className="timeline-end">17:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                                <hr className="bg-teal-500"/>
-                            </li>
-                            <li>
-                                <hr className="bg-teal-500"/>
-                                <div className="timeline-end">18:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-teal-500"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                                <hr/>
-                            </li>
-
-                            <li>
-                                <hr/>
-                                <div className="mt-6 mb-6 timeline-start timeline-box border-2">Horário Disponível</div>
-                                <div className="timeline-end underline">A partir de 18:00</div>
-                                <div className="timeline-middle">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5  "><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" /></svg>
-                                </div>
-                            </li>
+                            {timeLine}
                         </ul>
                     </div>
 
                     <div className="overflow-x-auto w-3/4">
                         <div className='flex justify-between border-b pb-4'>
-                            <select className="select select-bordered w-full max-w-xs">
+                            <select
+                                className="select select-bordered w-full max-w-xs"
+                                value={selectedClinico}
+                                onChange={handleClinicoChange}
+                            >
                                 {clinicos.map((clinico) => (
-                                    <option key={clinico.id} value={clinico.id}>{clinico.nomeCompleto}</option>
+                                    <option key={clinico.uid} value={clinico.uid}>
+                                        {clinico.nomeCompleto}
+                                    </option>
                                 ))}
                             </select>
 
@@ -179,104 +253,21 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
                                 Adicionar atendimento
                             </button>
                         </div>
-                        <table className="table">
-                            <thead className="text-xs text-gray-700 uppercase">
-                                <tr>
-                                    <th>Paciente</th>
-                                    <th>Clínico</th>
-                                    <th>Atendimento</th>
-                                    <th>Inicío</th>
-                                    <th>Fim</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th>Gustavo Furtado</th>
-                                    <td>Eduardo Salvarani</td>
-                                    <td>Orçamento</td>
-                                    <td>08:00</td>
-                                    <td>09:00</td>
-                                    <td>
-                                        <a  
-                                            href="/usuarioMenu"
-                                            className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" 
-                                            type="button"
-                                        >
-                                            Editar
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Maria Salvarani</th>
-                                    <td>Eduardo Salvarani</td>
-                                    <td>Atendimento Mensal</td>
-                                    <td>09:00</td>
-                                    <td>10:00</td>
-                                    <td>
-                                        <a  
-                                            href="/usuarioMenu"
-                                            className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" 
-                                            type="button"
-                                        >
-                                            Editar
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Ana Silva</th>
-                                    <td>Eduardo Salvarani</td>
-                                    <td>Cirurgia</td>
-                                    <td>14:00</td>
-                                    <td>15:00</td>
-                                    <td>
-                                        <a  
-                                            href="/usuarioMenu"
-                                            className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" 
-                                            type="button"
-                                        >
-                                            Editar
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Davi Pacheco</th>
-                                    <td>Eduardo Salvarani</td>
-                                    <td>Atendimento Mensal</td>
-                                    <td>17:00</td>
-                                    <td>18:00 </td>
-                                    <td>
-                                        <a  
-                                            href="/usuarioMenu"
-                                            className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" 
-                                            type="button"
-                                        >
-                                            Editar
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4 p-4" aria-label="Table navigation">
-                            <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Mostrando <span className="font-semibold text-gray-900 dark:text-white">4</span> de <span className="font-semibold text-gray-900 dark:text-white">4</span> pacientes</span>
-                            <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
-                                <li>
-                                    <button className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">Previous</button>
-                                </li>
-                                <li>
-                                    <button aria-current={undefined} className={`flex items-center justify-center px-3 h-8 leading-tight text-teal-500 border border-gray-300 bg-blue-50 hover:bg-teal-100 hover:text-teal-700'`}>
-                                        1
-                                    </button>
-                                </li>
-                                <li>
-                                    <button className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</button>
-                                </li>
-                            </ul>
-                        </nav>
+                        <GenericTable
+                            data={tableData}
+                            columns={columns}
+                            pageMax={5}
+                        />
                     </div>
                 </div>
-                {isModalOpen && <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}
-            </div>  
-        </div>
+                {isModalOpen && <Modal isOpen={isModalOpen} onClose={() => {
+                    setIsModalOpen(false)
+                    fetchConsultas()
+                }} />}
+            </div>
+            <form method="dialog" className="modal-backdrop">
+                <button>close</button>
+            </form>  
+        </dialog>
     );
 }

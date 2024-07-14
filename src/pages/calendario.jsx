@@ -4,6 +4,7 @@ import './../css/theme.css';
 import './../css/calendar.css';
 
 import ConsultaDiaModal from '../components/modals/consultaDiaModal';
+import VerificaHorarioIntervalo from '../components/modals/verificaHorarioIntervalo';
 
 const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
 
@@ -25,8 +26,7 @@ const generateCalendarDays = (year, month) => {
         day: i + 1,
         fromOtherMonth: false,
         date: new Date(year, month, i + 1),
-        //if day is today or bigger than today, background is white
-        background: new Date(year, month, i + 2) >= new Date() ? 'day-frame-hover bg-white' : 'day-frame-hover bg-gray-200',
+        background: new Date(year, month, i + 2) >= new Date() ? 'day-frame-hover bg-white' : 'day-frame-hover day-past-this-month day-from-another-month bg-white',
     }));
 
     const totalDays = weekdayOfFirstDay + daysInMonth;
@@ -42,6 +42,7 @@ const generateCalendarDays = (year, month) => {
 export default function CalendarioPage() {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [modalOpen, setModalOpen] = useState(false);
+    const [modalOpenInterval, setModalOpenInterval] = useState(false);
     const [selectedDate, setSelectedDate] = useState(null);
     const months = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     
@@ -56,13 +57,17 @@ export default function CalendarioPage() {
     };
 
     const openDayPage = (date) => () => {
+        console.log(date);
         setSelectedDate(date);
         setModalOpen(true);
     }
 
     return (
         <BasePage title="ODT - Calendário">
-            <div className='w-full flex flex-col gap-14'>
+            <div className='w-full flex flex-col gap-10'>
+                <div className='flex justify-center'>
+                    <button onClick={() => setModalOpenInterval(true)} className='bg-teal-500 text-white px-4 py-2 rounded-md'>Verificar disponibilidade em intervalo</button>
+                </div>
                 <div className='calendar-frame'>
                     <div className='calendar-side-bar bg-teal-500'>
                         <h1>{currentDate.getFullYear()}</h1>
@@ -91,7 +96,7 @@ export default function CalendarioPage() {
                         <div className="day-frame calendar-head"><h3>Sex</h3></div>
                         <div className="day-frame calendar-head"><h3>Sab</h3></div>
                         {renderDays().map((item, index) => (
-                            <div key={index} onClick={openDayPage(item.date)} className={`day-frame ${item.fromOtherMonth ? 'bg-gray-400' : item.background} `}>
+                            <div key={index} onClick={openDayPage(item.date)} className={`day-frame ${item.fromOtherMonth ? 'bg-gray-200 day-from-another-month' : item.background} `}>
                                 {item.day}
                             </div>
                         ))}
@@ -99,6 +104,17 @@ export default function CalendarioPage() {
                 </div>
             </div>
             {modalOpen && <ConsultaDiaModal isOpen={modalOpen} onClose={() => setModalOpen(false)} date={selectedDate} />}
+            {modalOpenInterval && <VerificaHorarioIntervalo 
+                isOpen={modalOpenInterval} 
+                onClose={() => setModalOpenInterval(false)} 
+                handleSelectedDia={(dia) => {
+                    console.log(dia);
+                    let date = new Date(dia);
+                    date.setDate(date.getDate() + 1);
+                    openDayPage(date)();
+                    setModalOpenInterval(false);
+                }}
+            />}
         </BasePage>
     );
 }

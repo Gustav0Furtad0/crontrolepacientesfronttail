@@ -47,8 +47,8 @@ function GenericSearchModal({
     }
 
     return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center mb-3">
-            <div className="absolute top-32 bg-white rounded shadow-lg w-3/4 p-4">
+        <dialog className="my-modal">
+            <div className="modal-box w-11/12 max-w-5xl">
                 <div className="border-b px-4 pb-2 mb-2 flex justify-between items-center">
                     <h2 className="font-semibold text-xl">{title}</h2>
                     <button className="text-black" onClick={onClose}>
@@ -140,7 +140,7 @@ function GenericSearchModal({
                     </ul>
                 </nav>
             </div>
-        </div>
+        </dialog>
     );
 }
 

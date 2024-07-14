@@ -119,8 +119,10 @@ export default function AddPaymentModal({ onClose }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex justify-center items-center">
-            <div className="absolute top-32 bg-white rounded shadow-lg w-1/2">
+        <dialog className="my-modal">
+            <div className="modal-box w-11/12 max-w-5xl"
+                style={{ transform: "none"}}
+            >
                 <div className="border-b px-4 py-2 flex justify-between items-center">
                     <h3 className="font-semibold text-xl">
                         Adicionar Pagamento
@@ -260,12 +262,12 @@ export default function AddPaymentModal({ onClose }) {
                 <GenericSearchModal
                     isOpen={isServicoSearchOpen}
                     title="Pesquisar Serviço"
-                    data={servicosData}
+                    data={servicosData} 
                     columns={servicosColumns}
                     onSelectItem={handleSelectServico}
                     onClose={() => setIsServicoSearchOpen(false)}
                 />
             </div>
-        </div>
+        </dialog>
     );
 }

@@ -11,7 +11,6 @@ export default function Head(props) {
                 <title>{props.title}</title>
                 <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
             </Helmet>
-            
         </>
     );
 }

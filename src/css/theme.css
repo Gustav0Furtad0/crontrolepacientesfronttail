@@ -13,3 +13,39 @@
 .text-theme-principal {
     color: #3fccbe;
 }
+
+.btn-theme-principal {
+    --tw-text-opacity: 1;
+    color: white;
+    outline-color: #14B8A6;
+    background-color: #14B8A6
+}
+
+.btn-outline.btn-theme-principal {
+    --tw-text-opacity: 1;
+    color: #14B8A6;
+    outline-color: #14B8A6;
+    background-color: transparent;
+    border: 1px solid #14B8A6;
+}
+
+.my-modal {
+    position: fixed;
+    inset: 0px;
+    margin: 0px;
+    display: grid;
+    height: 100%;
+    width: 100%;
+    justify-items: center;
+    padding: 0px;
+    z-index: 999;
+    background-color: transparent;
+    color: inherit;
+    transition-duration: 200ms;
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    transition-property: transform, opacity, visibility;
+}
+
+.modal-box {
+    transform: none;
+}

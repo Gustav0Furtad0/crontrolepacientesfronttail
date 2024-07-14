@@ -1,44 +1,27 @@
-import env from "react-dotenv";
-import User from "./auth/user";
-
+import axiosInstance from './middleware';
 export default class Pacientes {
     static async addPaciente(formData) {
         console.log(JSON.stringify(formData));
         try {
-            const response = await fetch(env.API_URL + '/paciente/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${User.getToken()}`,
-                },
-                body: JSON.stringify(formData),
-            });
+            const response = await axiosInstance.post('/paciente/create', formData);
 
             console.log(response);
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Falha ao adicionar paciente');
+            if (response.status !== 200) {
+                throw new Error(response.data.message || 'Falha ao adicionar paciente');
             }
 
-            const data = await response.json();
-            return data;
-
+            return response.data;
         } catch (error) {
-            return error;
+            console.error('Erro ao adicionar paciente:', error);
+            throw error;
         }
     }
 
     static async getAllPacientes() {
         try {
-            const response = await fetch(env.API_URL + '/paciente/getall', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${User.getToken()}`
-                }
-            });
-            let result = await response.json();
-            return result;
+            const response = await axiosInstance.get('/paciente/getall');
+            return response.data;
         } catch (error) {
             console.error('Failed to fetch pacientes:', error);
             return [];

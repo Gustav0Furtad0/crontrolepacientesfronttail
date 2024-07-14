@@ -66,15 +66,24 @@
     font-weight: bold;
     border: solid 1px rgb(221, 221, 221);
     height: 100px;
-    color: #858585;
+    color: black;
     padding: 20px;
     font-size: 20px;
 }
 
 .day-frame-hover:hover {
-    border: solid 1px #14B8A6;
+    border: solid 2px #14B8A6;
     color: black;
     cursor: pointer;
+}
+
+.day-from-another-month {
+    color: #a5a5a5;
+    pointer-events: none;
+}
+
+.day-past-this-month {
+    pointer-events: visible;
 }
 
 .calendar-head {
@@ -85,7 +94,6 @@
 .calendar-head:hover {
     border: none;
     color: #858585;
-    
 }
 
 @keyframes border-pulse {
