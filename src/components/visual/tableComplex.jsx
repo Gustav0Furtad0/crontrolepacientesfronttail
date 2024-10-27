@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const GenericTable = ({ data, columns, pageMax = 10 }) => {
+const GenericTableComplex = ({ data, columns, pageMax = 10 }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(pageMax);
 
@@ -16,8 +16,8 @@ const GenericTable = ({ data, columns, pageMax = 10 }) => {
 
     return (
         <div>
-            <table className="table">
-                <thead className="text-xs text-gray-700 uppercase">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
                         {columns.map((column) => (
                             <th key={column.key} scope="col" className="px-6 py-3">
@@ -29,13 +29,14 @@ const GenericTable = ({ data, columns, pageMax = 10 }) => {
                 <tbody>
                     {currentItems.length === 0 ? (
                         <tr>
-                            <td colSpan={columns.length} className="text-center py-4">
+                            <td colSpan={columns.length}>
                                 Nenhum item encontrado
                             </td>
                         </tr>
                     ) : (
                         currentItems.map((item, index) => (
                             <tr
+                                className="odd:bg-white even:bg-gray-50"
                                 key={index}
                                 onClick={() => {
                                     if (columns.onClick) {
@@ -44,7 +45,10 @@ const GenericTable = ({ data, columns, pageMax = 10 }) => {
                                 }}
                             >
                                 {columns.map((column) => (
-                                    <td key={column.key}>
+                                    <td 
+                                        key={column.key}
+                                        className="px-6 py-4 text-gray-900 whitespace-nowrap"
+                                    >
                                         {column.render ? column.render(item[column.key], item) : item[column.key]}
                                     </td>
                                 ))}
@@ -100,4 +104,4 @@ const GenericTable = ({ data, columns, pageMax = 10 }) => {
     );
 };
 
-export default GenericTable;
+export default GenericTableComplex;

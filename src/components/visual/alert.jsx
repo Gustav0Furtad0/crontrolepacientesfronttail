@@ -100,7 +100,9 @@ export default function Alert (props) {
     }, [timeout, onClose]);
 
     return (
-        <div className="toast toast-top toast-end">
+        <div className="toast toast-top toast-end" style={{
+            zIndex: 9999,
+        }}>
             <div className="alert" style={{ backgroundColor: bgcolor, border: 'none'}}>
                 {svg}
                 <span>{message}</span>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Pacientes from "../../scripts/pacientes";
 import Usuarios from "../../scripts/usuarios";
 import Consulta from "../../scripts/consultas";
+
 import GenericSearchModal from "./genericSearchModal";
 import { useAlert } from '../providers/alertContext';
 

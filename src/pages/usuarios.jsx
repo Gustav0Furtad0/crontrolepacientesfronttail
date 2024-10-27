@@ -70,8 +70,8 @@ export default function UserPage() {
         <BasePage title={"ODT - Usuários"}>
             <div className='w-full flex flex-col gap-14'>
                 <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-                    <div className="p-4 flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white dark:bg-gray-900">
-                        <button className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" 
+                    <div className="p-4 flex items-center justify-between flex-column flex-wrap md:flex-row space-y-4 md:space-y-0 pb-4 bg-white">
+                        <button className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-3 py-1.5" 
                             type="button"
                             onClick={() => setIsModalOpen(true)}
                         >
@@ -87,8 +87,8 @@ export default function UserPage() {
                             <input onChange={handleSearchChange} type="text" id="table-search-costumers" className="block p-2 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500" placeholder="Pesquisar usuário"/>
                         </div>
                     </div>
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                             <tr>
                                 <th scope="col" className="px-6 py-3">
                                     Nome Completo
@@ -107,8 +107,8 @@ export default function UserPage() {
                         <tbody>
                             {currentUsuarios.map((usuario, index) => {
                                 return (
-                                    <tr key={index} className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                    <tr key={index} className="odd:bg-white even:bg-gray-50">
+                                        <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                             {usuario.nomeCompleto}
                                         </th>
                                         <td className="px-6 py-4">
@@ -120,7 +120,7 @@ export default function UserPage() {
                                         <td className="px-6 py-4">
                                             <a  
                                                 href="/usuarioMenu"
-                                                className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" 
+                                                className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5" 
                                                 type="button"
                                             >
                                                 Menu
@@ -132,20 +132,20 @@ export default function UserPage() {
                         </tbody>
                     </table>
                     <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4 p-4" aria-label="Table navigation">
-                        <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing <span className="font-semibold text-gray-900 dark:text-white">{indexOfFirstUser + 1}-{indexOfLastUser}</span> of <span className="font-semibold text-gray-900 dark:text-white">{usuarios.length}</span></span>
+                        <span className="text-sm font-normal text-gray-500 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing <span className="font-semibold text-gray-900">{indexOfFirstUser + 1}-{indexOfLastUser}</span> of <span className="font-semibold text-gray-900">{usuarios.length}</span></span>
                         <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                             <li>
                                 <button onClick={handlePreviousPage} disabled={currentPage === 1} className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700">Previous</button>
                             </li>
                             {Array.from({ length: pageCount }, (_, i) => (
                                 <li key={i}>
-                                    <button onClick={() => handlePageChange(i + 1)} aria-current={currentPage === i + 1 ? "page" : undefined} className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === i + 1 ? 'text-teal-500 border border-gray-300 bg-blue-50 hover:bg-teal-100 hover:text-teal-700' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}`}>
+                                    <button onClick={() => handlePageChange(i + 1)} aria-current={currentPage === i + 1 ? "page" : undefined} className={`flex items-center justify-center px-3 h-8 leading-tight ${currentPage === i + 1 ? 'text-teal-500 border border-gray-300 bg-blue-50 hover:bg-teal-100 hover:text-teal-700' : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700'}`}>
                                         {i + 1}
                                     </button>
                                 </li>
                             ))}
                             <li>
-                                <button onClick={handleNextPage} disabled={currentPage === pageCount} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">Next</button>
+                                <button onClick={handleNextPage} disabled={currentPage === pageCount} className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700">Next</button>
                             </li>
                         </ul>
                     </nav>

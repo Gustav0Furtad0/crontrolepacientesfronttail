@@ -37,10 +37,16 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
                 data: formattedDate
             };
             const result = await Consultas.getConsultas(queryParams);
-            result.reverse();
-            setConsultas(Array.isArray(result) ? result : []);
-            const timeLine = timeLineMaker(result);
-            setTimeLine(timeLine);
+            if (Array.isArray(result)) {
+                result.reverse();
+                console.log(result);
+                setConsultas(Array.isArray(result) ? result : []);
+                const timeLine = timeLineMaker(result);
+                setTimeLine(timeLine);
+            } else {
+                setConsultas([]);
+                setTimeLine([]);
+            }
         } catch (error) {
             console.error('Erro:', error);
         }
@@ -52,7 +58,7 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
         if (data.length === 0) {
             timeLine.push(
                 <li>
-                    <div className="timeline-start timeline-box border-2">Nengum horário</div>
+                    <div className="timeline-start timeline-box border-2">Nenhum horário</div>
                 </li>
             );
             return timeLine;
@@ -195,7 +201,7 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
         { key: 'edit', title: '', render: () => (
             <a
                 href="/usuarioMenu"
-                className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5"
                 type="button"
             >
                 Editar
@@ -213,7 +219,7 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
 
     return (
         <dialog className="my-modal">
-            <div className="modal-box w-11/12 max-w-5xl">
+            <div className="modal-box w-6xl max-w-7xl">
 
                 <div className="border-b px-4 py-2 flex justify-between items-center">
                     <h2 className="font-semibold text-lg">Atendimentos {convertDate(date)}</h2>
