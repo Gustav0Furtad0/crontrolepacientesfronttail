@@ -4,6 +4,8 @@ import Modal from '../modals/addConsulta';
 import Consultas from '../../scripts/consultas';
 import GenericTable from '../visual/table';
 
+import { Link } from 'react-router-dom';
+
 export default function ConsultaDiaModal({ isOpen, onClose, date }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [clinicos, setClinicos] = useState([]);
@@ -39,7 +41,6 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
             const result = await Consultas.getConsultas(queryParams);
             if (Array.isArray(result)) {
                 result.reverse();
-                console.log(result);
                 setConsultas(Array.isArray(result) ? result : []);
                 const timeLine = timeLineMaker(result);
                 setTimeLine(timeLine);
@@ -198,15 +199,18 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
         { key: 'tipoConsulta', title: 'Atendimento' },
         { key: 'dataInicio', title: 'Início', render: (data) => data.split(' ')[1] },
         { key: 'dataFim', title: 'Fim', render: (data) => data.split(' ')[1] },
-        { key: 'edit', title: '', render: () => (
-            <a
-                href="/usuarioMenu"
-                className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5"
-                type="button"
-            >
-                Editar
-            </a>
-        ) },
+        { 
+            key: 'id', title: '', render: (data) => {
+                return (
+                    <Link
+                        to={`/consultaMenu/${data}`} 
+                        className="text-gray-700 bg-gray-50 border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-1.5"
+                    >
+                        Acessar
+                    </Link>
+                )
+            }
+        },
     ];
 
     const tableData = consultas.map((consulta) => ({
@@ -215,6 +219,7 @@ export default function ConsultaDiaModal({ isOpen, onClose, date }) {
         tipoConsulta: consulta.tipoConsulta,
         dataInicio: consulta.dataInicio,
         dataFim: consulta.dataFim,
+        id: consulta.id,
     }));
 
     return (

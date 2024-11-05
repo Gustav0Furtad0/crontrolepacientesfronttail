@@ -12,6 +12,7 @@ import CalendarioPage from './pages/calendario';
 import PacienteMenuPage from './pages/pacienteMenu';
 import FinanceiroPage from './pages/financeiro';
 import UsuariosPage from './pages/usuarios';
+import ConsultaMenuPage from './pages/consultaMenu';
 
 function RoutesClass() {
     return (
@@ -23,6 +24,7 @@ function RoutesClass() {
                 <Route path="/pacienteMenu" element={<RouteGuard component={PacienteMenuPage} />} />
                 <Route path="/financeiro" element={<RouteGuard component={FinanceiroPage} />} />
                 <Route path="/usuarios" element={<RouteGuard component={UsuariosPage} />} />
+                <Route path="/consultaMenu/:id" element={<RouteGuard component={ConsultaMenuPage} />} />
                 <Route path="/login" element={<LoginPage />} />
             </Routes>
         </Router>

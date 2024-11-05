@@ -315,14 +315,13 @@ export default function AddConsultationModal({ onClose }) {
                                 required
                             >
                                 <option value="">Selecione um tipo</option>
-                                <option value="orcamento">Orçamento</option>
-                                <option value="gratuito">Sem custo</option>
-                                <option value="retorno">Retorno</option>
-                                <option value="indefinido">
+                                <option value="Orçamento">Orçamento</option>
+                                <option value="Sem custo">Sem custo</option>
+                                <option value="Retorno">Retorno</option>
+                                <option value="Indefinido">
                                     Custo não calculado
                                 </option>
-                                <option value="fixo">Custo pré-fixado</option>
-                                <option value="mensal">
+                                <option value="Mensalista">
                                     Atendimento mensal
                                 </option>
                             </select>

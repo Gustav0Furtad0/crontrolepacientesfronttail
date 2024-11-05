@@ -34,6 +34,20 @@ export default class Consultas {
         }
     }
 
+    static async getConsultaById(id) {
+        try {
+            const response = await axiosInstance.get(`/consulta/${id}`);
+            if (response.status!== 200) {
+                throw new Error(response.data.message || 'Falha ao buscar consulta');
+            }
+            return response.data;
+            
+        } catch (error) {
+            console.error('Erro ao buscar consulta:', error);
+            throw error;
+        }
+    }
+
     static async verificarDisponibilidadeConsulta(data) {
         try {
             const response = await axiosInstance.post('/consulta/verificar', data);
@@ -51,6 +65,36 @@ export default class Consultas {
         } catch (error) {
             console.error('Erro ao verificar possíveis horários:', error);
             throw error;
+        }
+    }
+    
+    static async updateConsulta(id, updatedData) {
+        try {
+            const response = await axiosInstance.put(`/consulta/${id}`, updatedData);
+
+            if (response.status !== 200) {
+                throw new Error(response.data.message || 'Falha ao atualizar consulta');
+            }
+
+            return response.data;
+        } catch (error) {
+            console.error('Erro ao atualizar consulta:', error);
+            return { message: error.message, code: 500 };
+        }
+    }
+
+    static async deleteConsulta(id) {
+        try {
+            const response = await axiosInstance.delete(`/consulta/${id}`);
+
+            if (response.status !== 200) {
+                throw new Error(response.data.message || 'Falha ao deletar consulta');
+            }
+
+            return response.data;
+        } catch (error) {
+            console.error('Erro ao deletar consulta:', error);
+            return { message: error.message, code: 500 };
         }
     }
 }
